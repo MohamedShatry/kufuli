@@ -1,0 +1,16 @@
+{
+  "name": "Kufuli",
+  "description": "A password manager",
+  "version": "1.0",
+  "manifest_version": 2,
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Kufuli Manager"
+  },
+  "permissions": ["activeTab"],
+  "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com ; object-src 'self'"
+}
