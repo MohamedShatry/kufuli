@@ -1,17 +1,30 @@
-import React from 'react';
-import { Container } from '@mantine/core';
+import React, { useState } from 'react';
+import { Container, SegmentedControl } from '@mantine/core';
+import PasswordGenerator from './PasswordGenerator';
 
-function MainComponent() {
+function MainComponent(props) {
+  const [value, setValue] = useState('domain');
   return (
     <Container
       style={{
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
         flex: 1,
+        textAlign: 'center',
+        padding: '3%',
       }}
     >
-      Hello there
+      <SegmentedControl
+        value={value}
+        onChange={setValue}
+        mt={3}
+        data={[
+          { label: 'Domain', value: 'domain' },
+          { label: 'Vault', value: 'vault' },
+          { label: 'Generator', value: 'generator' },
+        ]}
+      />
+      {value === 'generator' && <PasswordGenerator />}
     </Container>
   );
 }
