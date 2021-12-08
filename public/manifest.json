@@ -11,6 +11,11 @@
     "default_popup": "popup.html",
     "default_title": "Kufuli Manager"
   },
-  "permissions": ["activeTab"],
-  "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com ; object-src 'self'"
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "cookies",
+    "https://us-central1-kufuli-b49c1.cloudfunctions.net/api/*"
+  ],
+  "content_security_policy": "script-src 'self' https://us-central1-kufuli-b49c1.cloudfunctions.net/api/ ; object-src 'self'"
 }

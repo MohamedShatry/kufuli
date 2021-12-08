@@ -43,5 +43,8 @@ module.exports = {
   module: {
     rules: [rules],
   },
+  resolve: {
+    extensions: ['.jsx', '.js'],
+  },
   plugins,
 };
