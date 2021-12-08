@@ -7,35 +7,50 @@ import {
   PasswordInput,
   Anchor,
   Container,
+  Alert,
 } from '@mantine/core';
 import { useForm } from '@mantine/hooks';
 
-const AuthComponent = () => {
+const AuthComponent = (props) => {
   const [type, setType] = useState('login');
+  const [authenticating, setAuthenticating] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const form = useForm({
     initialValues: {
       email: '',
       password: '',
+      confirmPassword: '',
     },
 
     validationRules: {
       email: (value) => /^\S+@\S+$/.test(value),
-      password: (value) => value.length > 5,
+      password: (value) => value.length > 7,
+      confirmPassword: (value) =>
+        type === 'signup' ? value === form.values.password : true,
     },
   });
 
-  const runSignUp = () => {
+  const runSignUp = (values) => {
+    console.log('Received request');
+    setAuthenticating(true);
     chrome.runtime.sendMessage(
       {
         command: type,
         data: {
-          email: form.values.email,
-          password: form.values.password,
+          email: values.email,
+          password: values.password,
+          confirmPassword: values.confirmPassword,
         },
       },
       (resp) => {
-        console.log(resp.user);
+        if (resp.error) {
+          setError(true);
+          setErrorMessage(resp.errorMessage);
+        }
+        setAuthenticating(false);
+        props.revalidate();
       }
     );
   };
@@ -49,11 +64,23 @@ const AuthComponent = () => {
         flex: 1,
       }}
     >
+      {error && (
+        <Alert
+          withCloseButton
+          closeButtonLabel='Close alert'
+          title='Bummer!'
+          color='red'
+          onClose={() => setError(false)}
+          my={3}
+        >
+          {errorMessage}
+        </Alert>
+      )}
       <Title order={2} align='center'>
         {type === 'login' ? 'Login to continue' : 'Sign Up Today'}
       </Title>
       <Space h='xl' />
-      <form onSubmit={form.onSubmit((values) => console.log(values))}>
+      <form onSubmit={form.onSubmit((values) => runSignUp(values))}>
         <TextInput
           required
           label='Email'
@@ -70,7 +97,7 @@ const AuthComponent = () => {
           label='Password'
           required
           error={
-            form.errors.password && 'Password must be longer than 6 characters'
+            form.errors.password && 'Password must be longer than 7 characters'
           }
           value={form.values.password}
           onChange={(event) =>
@@ -78,7 +105,22 @@ const AuthComponent = () => {
           }
         />
         <Space h='md' />
-        <Button type='submit' fullWidth color='indigo'>
+        {type === 'signup' && (
+          <>
+            <PasswordInput
+              placeholder='Password'
+              label='Confirm Password'
+              required
+              error={form.errors.confirmPassword && 'Passwords do not match'}
+              value={form.values.confirmPassword}
+              onChange={(event) =>
+                form.setFieldValue('confirmPassword', event.currentTarget.value)
+              }
+            />
+            <Space h='md' />
+          </>
+        )}
+        <Button type='submit' fullWidth color='indigo' loading={authenticating}>
           {type === 'login' ? 'Login' : 'Sign Up'}
         </Button>
       </form>
