@@ -144,8 +144,8 @@ app.get('/getCredentials', verifyAuth, async (req, res) => {
         const data = doc.data();
         return {
           credentialId: doc.id,
-          email: decrypt(data.encryptedEmail, key),
           domain: decrypt(data.encryptedDomain, key),
+          email: decrypt(data.encryptedEmail, key),
           password: decrypt(data.encryptedPassword, key),
         };
       });

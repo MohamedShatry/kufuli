@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Input,
   ActionIcon,
@@ -9,16 +9,16 @@ import {
   NumberInput,
   InputWrapper,
   Button,
-} from '@mantine/core';
-import { ClipboardIcon } from '@modulz/radix-icons';
-import generator from 'generate-password-browser';
-import { useClipboard } from '@mantine/hooks';
+} from "@mantine/core";
+import { ClipboardIcon } from "@modulz/radix-icons";
+import generator from "generate-password-browser";
+import { useClipboard } from "@mantine/hooks";
 
 const RightSection = (props) => {
   const clipboard = useClipboard({ timeout: 500 });
   return (
     <ActionIcon onClick={() => clipboard.copy(props.value)}>
-      <ClipboardIcon color='black' />
+      <ClipboardIcon color="black" />
     </ActionIcon>
   );
 };
@@ -27,7 +27,7 @@ function PasswordGenerator() {
   useEffect(() => {
     chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
       const url = tabs[0].url;
-      console.log('TABS', url);
+      console.log("TABS", url);
     });
   }, []);
 
@@ -58,15 +58,15 @@ function PasswordGenerator() {
     <Container
       m={4}
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '80vh',
-        justifyContent: 'center',
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "80vh",
+        justifyContent: "center",
       }}
     >
-      <InputWrapper label='Your generated password'>
+      <InputWrapper label="Your generated password">
         <Input
-          placeholder='Generated Password'
+          placeholder="Generated Password"
           rightSection={<RightSection value={currentPassword} />}
           value={currentPassword}
           readOnly
@@ -74,47 +74,47 @@ function PasswordGenerator() {
       </InputWrapper>
       <Space mt={4} />
       <NumberInput
-        label='Number of characters'
-        id='length'
+        label="Number of characters"
+        id="length"
         defaultValue={values.length}
-        placeholder='Your age'
-        style={{ marginLeft: '10px', marginRight: '10px' }}
+        placeholder="Your age"
+        style={{ marginLeft: "10px", marginRight: "10px" }}
         onChange={(val) => updateLength(val)}
       />
-      <SimpleGrid cols={2} style={{ padding: '10px' }}>
+      <SimpleGrid cols={2} style={{ padding: "10px" }}>
         <Checkbox
-          id='numbers'
+          id="numbers"
           checked={values.numbers}
-          label='Numbers'
+          label="Numbers"
           onChange={(e) =>
             updateValues(e.currentTarget.id, e.currentTarget.checked)
           }
         />
         <Checkbox
-          id='symbols'
+          id="symbols"
           checked={values.symbols}
-          label='Symbols'
+          label="Symbols"
           onChange={(e) =>
             updateValues(e.currentTarget.id, e.currentTarget.checked)
           }
         />
         <Checkbox
-          id='uppercase'
+          id="uppercase"
           checked={values.uppercase}
-          label='Uppercase'
+          label="Uppercase"
           onChange={(e) =>
             updateValues(e.currentTarget.id, e.currentTarget.checked)
           }
         />
         <Checkbox
-          id='lowercase'
+          id="lowercase"
           checked={values.lowercase}
-          label='Lowercase'
+          label="Lowercase"
           disabled
         />
       </SimpleGrid>
       <Space mt={4} />
-      <Button fullWidth color='indigo' onClick={generateNewPassword}>
+      <Button fullWidth color="indigo" onClick={generateNewPassword}>
         Generate
       </Button>
     </Container>

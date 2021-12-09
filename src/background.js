@@ -1,10 +1,9 @@
 // @ts-nocheck
-const baseUrl = 'https://us-central1-kufuli-b49c1.cloudfunctions.net/api/';
+const baseUrl = "https://us-central1-kufuli-b49c1.cloudfunctions.net/api/";
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  
-  if (msg.command === 'isLoggedIn') {
-    const val = localStorage.getItem('loggedIn');
+  if (msg.command === "isLoggedIn") {
+    const val = localStorage.getItem("loggedIn");
     if (val) {
       sendResponse({
         user: true,
@@ -14,11 +13,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         user: false,
       });
     }
-  } else if (msg.command === 'login') {
-    fetch(baseUrl + 'login', {
-      method: 'POST',
+  } else if (msg.command === "login") {
+    fetch(baseUrl + "login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         email: msg.data.email,
@@ -30,16 +29,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         if (!res.ok) {
           sendResponse({
             error: true,
-            message: '',
+            message: "",
             errorMessage: data.message,
           });
         } else {
-          
-          localStorage.setItem('loggedIn', true);
+          localStorage.setItem("loggedIn", true);
           sendResponse({
             error: false,
             message: data.message,
-            errorMessage: '',
+            errorMessage: "",
           });
         }
       })
@@ -47,14 +45,14 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         sendResponse({
           error: true,
           errorMessage: err,
-          message: '',
+          message: "",
         });
       });
-  } else if (msg.command === 'signup') {
-    fetch(baseUrl + 'signup', {
-      method: 'POST',
+  } else if (msg.command === "signup") {
+    fetch(baseUrl + "signup", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         email: msg.data.email,
@@ -67,15 +65,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         if (!res.ok) {
           sendResponse({
             error: true,
-            message: '',
+            message: "",
             errorMessage: data.message,
           });
         } else {
-          localStorage.setItem('loggedIn', true);
+          localStorage.setItem("loggedIn", true);
           sendResponse({
             error: false,
             message: data.message,
-            errorMessage: '',
+            errorMessage: "",
           });
         }
       })
@@ -83,9 +81,27 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         sendResponse({
           error: true,
           errorMessage: err,
-          message: '',
+          message: "",
         });
       });
+  } else if (msg.command === "getCredentials") {
+    fetch(baseUrl + "getCredentials").then(async (res) => {
+      const received = await res.json();
+      if (!res.ok) {
+        sendResponse({
+          error: true,
+          message: "",
+          errorMessage: "Error received",
+        });
+      } else {
+        localStorage.setItem("credentials", received.data);
+        sendResponse({
+          error: false,
+          message: received.data,
+          errorMessage: "",
+        });
+      }
+    });
   }
 
   return true;

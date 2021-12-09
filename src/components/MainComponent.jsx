@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import { Container, SegmentedControl } from '@mantine/core';
-import PasswordGenerator from './PasswordGenerator';
+import React, { useState } from "react";
+import { Container, SegmentedControl } from "@mantine/core";
+import PasswordGenerator from "./PasswordGenerator";
+import VaultComponent from "./VaultComponent";
 
 function MainComponent(props) {
-  const [value, setValue] = useState('domain');
+  const [value, setValue] = useState("domain");
   return (
     <Container
       style={{
-        display: 'flex',
-        flexDirection: 'column',
+        display: "flex",
+        flexDirection: "column",
         flex: 1,
-        textAlign: 'center',
-        padding: '3%',
+        textAlign: "center",
+        padding: "3%",
       }}
     >
       <SegmentedControl
@@ -19,12 +20,13 @@ function MainComponent(props) {
         onChange={setValue}
         mt={3}
         data={[
-          { label: 'Domain', value: 'domain' },
-          { label: 'Vault', value: 'vault' },
-          { label: 'Generator', value: 'generator' },
+          { label: "Domain", value: "domain" },
+          { label: "Vault", value: "vault" },
+          { label: "Generator", value: "generator" },
         ]}
       />
-      {value === 'generator' && <PasswordGenerator />}
+      {value === "generator" && <PasswordGenerator />}
+      {value === "vault" && <VaultComponent />}
     </Container>
   );
 }
