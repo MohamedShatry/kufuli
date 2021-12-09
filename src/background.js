@@ -1,14 +1,21 @@
 // @ts-nocheck
 const baseUrl = 'https://us-central1-kufuli-b49c1.cloudfunctions.net/api/';
 
-chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  
   if (msg.command === 'isLoggedIn') {
     const val = localStorage.getItem('loggedIn');
-    sendResponse({
-      success: val,
-    });
+    if (val) {
+      sendResponse({
+        user: true,
+      });
+    } else {
+      sendResponse({
+        user: false,
+      });
+    }
   } else if (msg.command === 'login') {
-    const response = await fetch(baseUrl + 'login', {
+    fetch(baseUrl + 'login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -17,18 +24,34 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
         email: msg.data.email,
         password: msg.data.password,
       }),
-    }).catch((err) => {
-      sendResponse({
-        message: 'error',
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          sendResponse({
+            error: true,
+            message: '',
+            errorMessage: data.message,
+          });
+        } else {
+          
+          localStorage.setItem('loggedIn', true);
+          sendResponse({
+            error: false,
+            message: data.message,
+            errorMessage: '',
+          });
+        }
+      })
+      .catch((err) => {
+        sendResponse({
+          error: true,
+          errorMessage: err,
+          message: '',
+        });
       });
-    });
-
-    localStorage.setItem('loggedIn', true);
-    sendResponse({
-      message: 'success',
-    });
   } else if (msg.command === 'signup') {
-    const response = await fetch(baseUrl + 'login', {
+    fetch(baseUrl + 'signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,16 +61,32 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
         password: msg.data.password,
         confirmPassword: msg.data.confirmPassword,
       }),
-    }).catch((err) => {
-      sendResponse({
-        message: 'error',
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          sendResponse({
+            error: true,
+            message: '',
+            errorMessage: data.message,
+          });
+        } else {
+          localStorage.setItem('loggedIn', true);
+          sendResponse({
+            error: false,
+            message: data.message,
+            errorMessage: '',
+          });
+        }
+      })
+      .catch((err) => {
+        sendResponse({
+          error: true,
+          errorMessage: err,
+          message: '',
+        });
       });
-    });
-
-    localStorage.setItem('loggedIn', true);
-    sendResponse({
-      message: 'success',
-    });
   }
+
   return true;
 });
