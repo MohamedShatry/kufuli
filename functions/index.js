@@ -19,7 +19,7 @@ const firestore = admin.firestore();
 const cookieOptions = {
   httpOnly: true,
   secure: true,
-  overwrite: true,
+  expires: new Date(Date.now() + 7 * 24 * 3600 * 1000),
 };
 
 // Encryption algorithms
@@ -159,13 +159,22 @@ app.get('/getCredentials', verifyAuth, async (req, res) => {
 app.post('/registerCredential', verifyAuth, async (req, res) => {
   const { key, uid } = req.headers;
   const { email, password, domain } = req.body;
-
+  const { hostname } = new URL(domain);
   try {
     await firestore.collection('credentials').add({
       uid: uid,
-      encryptedDomain: encrypt(domain, key),
+      encryptedDomain: encrypt(hostname, key),
       encryptedEmail: encrypt(email, key),
       encryptedPassword: encrypt(password, key),
+    });
+
+    res.status(201).json({
+      message: 'Success',
+      data: {
+        email: email,
+        password: password,
+        domain: hostname,
+      },
     });
   } catch {
     (err) => {
@@ -174,10 +183,6 @@ app.post('/registerCredential', verifyAuth, async (req, res) => {
       });
     };
   }
-
-  res.status(201).json({
-    message: 'Success',
-  });
 });
 
 // {baseurl}/api/login

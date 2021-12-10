@@ -35,6 +35,7 @@ module.exports = {
     popup: './src/popup/popup.jsx',
     option: './src/option/option.jsx',
     background: './src/background.js',
+    contentScript: './src/contentScript.js',
   },
   output: {
     filename: '[name].js',
