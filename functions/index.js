@@ -99,7 +99,7 @@ app.post('/signup', async (req, res) => {
       message: "Bad request! Passwords don't match",
     });
   }
-  // TODO: Add checks to ensure password is strong.
+
   const query = await firestore
     .collection('user')
     .where('email', '==', email)

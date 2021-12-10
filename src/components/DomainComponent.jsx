@@ -12,6 +12,7 @@ import {
   Text,
   TextInput,
   Transition,
+  ScrollArea,
 } from '@mantine/core';
 import { useClickOutside, useClipboard, useForm } from '@mantine/hooks';
 import {
@@ -169,14 +170,17 @@ function DomainComponent(props) {
 
   return (
     <>
-      <Container
-        styles={{
-          flex: 1,
-          width: '100%',
-          position: 'relative',
-        }}
+      <Space mt={4} />
+      <Button
+        leftIcon={<PlusIcon style={{ width: 16, height: 16 }} />}
+        variant='default'
+        onClick={() => setOpen(true)}
       >
-        <Space mt={4} />
+        Add Credentials
+      </Button>
+
+      <Space mt={4} />
+      <ScrollArea style={{ width: '100%', height: '85%' }}>
         <Accordion>
           {domainValues.map((cred, index) => {
             return (
@@ -205,17 +209,11 @@ function DomainComponent(props) {
             );
           })}
         </Accordion>
-        {domainValues.length === 0 && (
-          <Text> You don't have any credentials saved on this URL</Text>
-        )}
-        <Box
-          styles={{ position: 'absolute', zIndex: 1, right: 20, bottom: 20 }}
-        >
-          <ActionIcon variant='outline' onClick={() => setOpen(true)}>
-            <PlusIcon style={{ width: 16, height: 16 }} />
-          </ActionIcon>
-        </Box>
-      </Container>
+      </ScrollArea>
+      {domainValues.length === 0 && (
+        <Text> You don't have any credentials saved on this URL</Text>
+      )}
+
       <Transition
         mounted={open}
         transition={'slide-up'}
