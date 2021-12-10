@@ -48,6 +48,14 @@ function PasswordRequirement({ meets, label }) {
   );
 }
 
+const validate = (value) => {
+  const arr = requirements.map((requirement, index) =>
+    requirement.re.test(value)
+  );
+
+  return !arr.includes(false);
+};
+
 const AuthComponent = (props) => {
   const [type, setType] = useState("login");
   const [authenticating, setAuthenticating] = useState(false);
@@ -65,7 +73,7 @@ const AuthComponent = (props) => {
     validationRules: {
       email: (value) => /^\S+@\S+$/.test(value),
       password: (value) =>
-        type === "signup" ? requirement.re.test(value) : value.length > 7,
+        type === "signup" ? validate(value) : value.length > 7,
       confirmPassword: (value) =>
         type === "signup" ? value === form.values.password : true,
     },
@@ -164,7 +172,7 @@ const AuthComponent = (props) => {
           <>
             <Space h="md" />
             <Popover
-              opened={popoverOpened}
+              opened={popoverOpened && !validate(form.values.password)}
               position="bottom"
               placement="start"
               withArrow
